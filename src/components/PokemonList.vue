@@ -15,7 +15,7 @@
           v-else
           class="nes-icon is-small heart is-empty"
         />
-        {{ pokemon.name }}
+        <span>{{ pokemon.name }}</span>
         <img
           :key="pokemon.url"
           :src="
@@ -86,10 +86,22 @@
   <style scoped>
   .pokemon-list {
       text-transform: capitalize;
+      box-sizing: border-box;
   }
   
   .pokemon-list-item {
       display: flex;
       align-items: center;
+      justify-content: space-between;
+  }
+
+  .pokemon-list-item > span {
+    width: 40%;
+    padding-left: 10px;
+    text-align: left;
+  }
+
+  .nes-btn {
+      width: 100px; 
   }
   </style>
