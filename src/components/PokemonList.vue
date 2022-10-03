@@ -102,6 +102,7 @@
   }
 
   .nes-btn {
-      width: 120px; 
+      width: 120px;
+      height: 70px;
   }
   </style>
