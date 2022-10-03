@@ -57,5 +57,11 @@
       display: flex;
       justify-content: space-evenly;
   }
+
+  @media screen and (max-width: 800px) {
+      .select-pokemon-content {
+          flex-direction: column-reverse;
+      }
+  }
   </style>
   

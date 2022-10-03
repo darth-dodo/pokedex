@@ -42,7 +42,15 @@
   }
   
   .overview-favorite-pokemon__title {
-    margin-top: 10px;
-    text-align: center;
+      margin-top: 10px;
+      text-align: center;
+  }
+
+  @media screen and (max-width: 860px) {
+    .overview-favorite-pokemon {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+  }
   }
   </style>
