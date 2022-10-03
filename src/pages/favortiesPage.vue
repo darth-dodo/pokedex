@@ -7,6 +7,15 @@
     </div>
 </template>
 
+<script>
+import { mapState } from 'vuex'
+    export default {
+        computed: {
+            ...mapState(['stateFavoritePokemonList'])
+        }
+    }
+</script>
+
 <style scoped>
 .overview-favorite-pokemon {
     display: grid;
