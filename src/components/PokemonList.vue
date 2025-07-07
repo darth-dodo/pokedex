@@ -15,25 +15,38 @@
           v-else
           class="nes-icon is-small heart is-empty"
         />
-        <span>{{ pokemon.name }}</span>
+        <div class="pokemon-info">
+          <span class="pokemon-name">{{ pokemon.name }}</span>
+          <div class="pokemon-types" v-if="pokemon.types">
+            <span 
+              v-for="type in pokemon.types" 
+              :key="type.type.name"
+              class="type-badge"
+              :class="`type-${type.type.name}`"
+            >
+              {{ type.type.name }}
+            </span>
+          </div>
+        </div>
         <img
-          :key="pokemon.url"
+          :key="pokemon.url || pokemon.id"
           :src="
-            `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index +
-              1}.png`
+            pokemon.sprites?.front_default || 
+            `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id || index + 1}.png`
           "
-          alt="Pokemon`"
+          :alt="pokemon.name"
+          class="pokemon-sprite"
         >
         <a
           v-show="!favorites.includes(pokemon.name)"
           class="nes-btn"
           :class="{ 'is-disabled': favoriteListLength === 10 }"
-          @click="setFavorites(pokemon.name), playPokemonCry(index + 1)"
+          @click="setFavorites(pokemon.name), playPokemonCry(pokemon.id || index + 1)"
         >Pick me!</a>
         <button
           v-show="favorites.includes(pokemon.name)"
           class="nes-btn is-error"
-          @click="setFavorites(pokemon.name), playPokemonCry(index + 1)"
+          @click="setFavorites(pokemon.name), playPokemonCry(pokemon.id || index + 1)"
         >
           Remove
         </button>
@@ -95,14 +108,143 @@
       justify-content: space-between;
   }
 
-  .pokemon-list-item > span {
+  .pokemon-info {
     width: 40%;
     padding-left: 10px;
     text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
   }
+
+  .pokemon-name {
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .pokemon-types {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .type-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 1px solid #333;
+  }
+
+  .pokemon-sprite {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+  }
+
+  /* Pokemon Type Colors */
+  .type-normal { background-color: #A8A878; }
+  .type-fire { background-color: #F08030; }
+  .type-water { background-color: #6890F0; }
+  .type-electric { background-color: #F8D030; color: #333; }
+  .type-grass { background-color: #78C850; }
+  .type-ice { background-color: #98D8D8; color: #333; }
+  .type-fighting { background-color: #C03028; }
+  .type-poison { background-color: #A040A0; }
+  .type-ground { background-color: #E0C068; color: #333; }
+  .type-flying { background-color: #A890F0; }
+  .type-psychic { background-color: #F85888; }
+  .type-bug { background-color: #A8B820; }
+  .type-rock { background-color: #B8A038; }
+  .type-ghost { background-color: #705898; }
+  .type-dragon { background-color: #7038F8; }
+  .type-dark { background-color: #705848; }
+  .type-steel { background-color: #B8B8D0; color: #333; }
+  .type-fairy { background-color: #EE99AC; color: #333; }
 
   .nes-btn {
       width: 120px;
       height: 70px;
+  }
+
+  /* Responsive Design */
+  @media screen and (max-width: 768px) {
+    .pokemon-list-item {
+      flex-direction: column;
+      text-align: center;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .pokemon-info {
+      width: 100%;
+      padding-left: 0;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .pokemon-name {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .pokemon-types {
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .type-badge {
+      font-size: 11px;
+      padding: 3px 8px;
+    }
+
+    .pokemon-sprite {
+      width: 80px;
+      height: 80px;
+      margin: 10px 0;
+    }
+
+    .nes-btn {
+      width: 100px;
+      height: 50px;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .pokemon-list-item {
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+
+    .pokemon-name {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .pokemon-types {
+      gap: 8px;
+    }
+
+    .type-badge {
+      font-size: 12px;
+      padding: 4px 10px;
+    }
+
+    .pokemon-sprite {
+      width: 100px;
+      height: 100px;
+      margin: 15px 0;
+    }
+
+    .nes-btn {
+      width: 120px;
+      height: 60px;
+      font-size: 14px;
+      margin-top: 15px;
+    }
   }
   </style>
