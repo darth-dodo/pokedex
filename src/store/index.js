@@ -6,7 +6,10 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     statePokemonDataList: [],
-    stateFavoritePokemonList: []
+    stateFavoritePokemonList: [],
+    stateDetailedPokemonList: [],
+    stateSearchQuery: '',
+    stateSelectedType: ''
   },
   actions: {
     setPokemonData(context, payload) {
@@ -23,6 +26,15 @@ export default new Vuex.Store({
     },
     eraseFavoritePokemonList(context) {
       context.commit("eraseFavoritePokemonList");
+    },
+    setDetailedPokemonList(context, payload) {
+      context.commit("setDetailedPokemonList", payload);
+    },
+    setSearchQuery(context, payload) {
+      context.commit("setSearchQuery", payload);
+    },
+    setSelectedType(context, payload) {
+      context.commit("setSelectedType", payload);
     }
   },
   mutations: {
@@ -40,6 +52,44 @@ export default new Vuex.Store({
     },
     eraseFavoritePokemonList(state) {
       state.stateFavoritePokemonList = [];
+    },
+    setDetailedPokemonList(state, list) {
+      state.stateDetailedPokemonList = list;
+    },
+    setSearchQuery(state, query) {
+      state.stateSearchQuery = query;
+    },
+    setSelectedType(state, type) {
+      state.stateSelectedType = type;
     }
   },
+  getters: {
+    filteredPokemonList(state) {
+      let filtered = [...state.stateDetailedPokemonList];
+      
+      // Filter by search query
+      if (state.stateSearchQuery) {
+        filtered = filtered.filter(pokemon => 
+          pokemon.name.toLowerCase().includes(state.stateSearchQuery.toLowerCase())
+        );
+      }
+      
+      // Filter by type
+      if (state.stateSelectedType) {
+        filtered = filtered.filter(pokemon => 
+          pokemon.types && pokemon.types.some(type => 
+            type.type.name === state.stateSelectedType
+          )
+        );
+      }
+      
+      return filtered;
+    },
+    filteredPokemonCount(state, getters) {
+      return getters.filteredPokemonList.length;
+    },
+    totalPokemonCount(state) {
+      return state.stateDetailedPokemonList.length;
+    }
+  }
 });
