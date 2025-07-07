@@ -5,6 +5,7 @@
         I can't choose, help me <button
           class="nes-btn is-success"
           @click="startInterval"
+          @dblclick="konamiEasterEgg"
         >
           Pick Pokémon
         </button>
@@ -63,7 +64,8 @@
           },
           data: function() {
               return {
-                  maximumList: 10
+                  maximumList: 10,
+                  clickCount: 0
               }
           },
           computed: {
@@ -94,6 +96,16 @@
             },
             emptyFavoritePokemonList() {
               this.eraseFavoritePokemonList()
+              this.clickCount++
+              if (this.clickCount === 5) {
+                  alert('🗑️ You really like clearing lists! Here\'s a secret: Try clicking the logo 10 times! 🗑️')
+                  this.clickCount = 0
+              }
+            },
+            konamiEasterEgg() {
+              const audio = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.wav')
+              audio.play().catch(() => {})
+              alert('🎮 Konami Code Master! You found the secret double-click! 🎮')
             },
             ...mapActions([
                 'addFavorite', 'eraseFavoritePokemonList'
@@ -105,5 +117,65 @@
   <style scoped>
   .chosen-pokemon {
       text-transform: capitalize;
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 8px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+  }
+
+  .chosen-pokemon:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .chosen-pokemon img {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      object-fit: contain;
+  }
+
+  .nes-btn {
+      margin: 10px 5px;
+  }
+
+  @media screen and (max-width: 768px) {
+      .chosen-pokemon {
+          padding: 6px;
+          margin-bottom: 8px;
+      }
+
+      .chosen-pokemon img {
+          width: 16px;
+          height: 16px;
+          margin-right: 8px;
+      }
+
+      .nes-btn {
+          margin: 8px 3px;
+          font-size: 12px;
+      }
+  }
+
+  @media screen and (max-width: 480px) {
+      .chosen-pokemon {
+          padding: 5px;
+          margin-bottom: 5px;
+          font-size: 12px;
+      }
+
+      .chosen-pokemon img {
+          width: 14px;
+          height: 14px;
+          margin-right: 6px;
+      }
+
+      .nes-btn {
+          margin: 5px 2px;
+          font-size: 10px;
+          padding: 5px 10px;
+      }
   }
   </style>

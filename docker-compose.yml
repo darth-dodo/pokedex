@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # Development environment
+  pokedex-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - pokedex-network
+    profiles:
+      - development
+
+  # Production environment
+  pokedex-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - pokedex-network
+    profiles:
+      - production
+
+  # Nginx reverse proxy for development (optional)
+  nginx-dev:
+    image: nginx:alpine
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx-dev.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - pokedex-dev
+    networks:
+      - pokedex-network
+    profiles:
+      - development-proxy
+
+networks:
+  pokedex-network:
+    driver: bridge
+
+volumes:
+  node_modules:

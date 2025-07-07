@@ -70,5 +70,69 @@
     align-items: center;
     justify-content: space-around;
     margin: 10px;
+    padding: 20px;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .pokemon-card__image {
+    flex: 0 0 auto;
+    margin-right: 15px;
+  }
+
+  .pokemon-card__image img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+  }
+
+  .pokemon-card__text {
+    flex: 1;
+    text-align: left;
+  }
+
+  .pokemon-card__text p {
+    margin: 8px 0;
+    word-wrap: break-word;
+  }
+
+  @media screen and (max-width: 768px) {
+    .pokemon-card {
+      flex-direction: column;
+      text-align: center;
+      margin: 10px 5px;
+      padding: 15px;
+    }
+
+    .pokemon-card__image {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+
+    .pokemon-card__image img {
+      width: 80px;
+      height: 80px;
+    }
+
+    .pokemon-card__text {
+      text-align: center;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .pokemon-card {
+      margin: 5px;
+      padding: 10px;
+    }
+
+    .pokemon-card__image img {
+      width: 60px;
+      height: 60px;
+    }
+
+    .pokemon-card__text p {
+      font-size: 12px;
+      margin: 5px 0;
+    }
   }
   </style>
