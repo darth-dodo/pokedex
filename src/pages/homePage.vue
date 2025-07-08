@@ -22,6 +22,14 @@
           :favorites="stateFavoritePokemonList"
         />
       </div>
+      
+      <pokemon-pagination
+        :current-page="currentPage"
+        :total-pages="totalPages"
+        :total-items="filteredPokemonCount"
+        :items-per-page="20"
+        @page-change="handlePageChange"
+      />
     </div>
   </template>
   
@@ -29,6 +37,7 @@
   import PokemonList from '@/components/PokemonList'
   import SummaryFavorites from '@/components/SummaryFavorites'
   import PokemonSearch from '@/components/PokemonSearch'
+  import PokemonPagination from '@/components/PokemonPagination'
   import { mapState, mapActions, mapGetters } from 'vuex'
   
   export default {
@@ -36,6 +45,7 @@
           PokemonList,
           SummaryFavorites,
           PokemonSearch,
+          PokemonPagination,
       },
       data() {
           return {
@@ -46,7 +56,7 @@
       },
       computed: {
           ...mapState(['statePokemonDataList', 'stateFavoritePokemonList']),
-          ...mapGetters(['filteredPokemonList', 'filteredPokemonCount', 'totalPokemonCount']),
+          ...mapGetters(['filteredPokemonList', 'filteredPokemonCount', 'totalPokemonCount', 'totalPages', 'currentPage']),
       },
       async created() {
           const pokemonData = await this.getPokemonData()
@@ -122,8 +132,14 @@
           handleFilterChange(filters) {
               this.setSearchQuery(filters.search)
               this.setSelectedType(filters.type)
+              this.setCurrentPage(1) // Reset to first page when filtering
           },
-          ...mapActions(['setPokemonData', 'setDetailedPokemonList', 'setSearchQuery', 'setSelectedType']),
+          handlePageChange(page) {
+              this.setCurrentPage(page)
+              // Scroll to top when changing pages
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+          },
+          ...mapActions(['setPokemonData', 'setDetailedPokemonList', 'setSearchQuery', 'setSelectedType', 'setCurrentPage']),
       },
   }
   </script>
@@ -139,6 +155,8 @@
   .logo-image {
       cursor: pointer;
       transition: transform 0.3s ease;
+      display: block;
+      margin: 0 auto 20px auto;
       max-width: 100%;
       height: auto;
   }
@@ -160,13 +178,13 @@
   }
 
   @media screen and (max-width: 800px) {
-      .select-pokemon-content {
-          flex-direction: column-reverse;
-          gap: 15px;
-      }
-      
       .select-pokemon-page {
           padding: 15px;
+      }
+      
+      .select-pokemon-content {
+          flex-direction: column-reverse;
+          gap: 20px;
       }
   }
 
@@ -174,14 +192,15 @@
       .select-pokemon-page {
           padding: 10px;
       }
-
-      .select-pokemon-content {
-          gap: 10px;
-          margin-top: 15px;
-      }
-
+      
       .logo-image {
-          max-width: 80%;
+          margin-bottom: 15px;
+          max-width: 90%;
+      }
+      
+      .select-pokemon-content {
+          gap: 15px;
+          margin-top: 15px;
       }
   }
   </style>
