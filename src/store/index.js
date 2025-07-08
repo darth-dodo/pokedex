@@ -9,7 +9,9 @@ export default new Vuex.Store({
     stateFavoritePokemonList: [],
     stateDetailedPokemonList: [],
     stateSearchQuery: '',
-    stateSelectedType: ''
+    stateSelectedType: '',
+    stateCurrentPage: 1,
+    stateItemsPerPage: 20
   },
   actions: {
     setPokemonData(context, payload) {
@@ -35,6 +37,12 @@ export default new Vuex.Store({
     },
     setSelectedType(context, payload) {
       context.commit("setSelectedType", payload);
+    },
+    setCurrentPage(context, payload) {
+      context.commit("setCurrentPage", payload);
+    },
+    setItemsPerPage(context, payload) {
+      context.commit("setItemsPerPage", payload);
     }
   },
   mutations: {
@@ -61,10 +69,16 @@ export default new Vuex.Store({
     },
     setSelectedType(state, type) {
       state.stateSelectedType = type;
+    },
+    setCurrentPage(state, page) {
+      state.stateCurrentPage = page;
+    },
+    setItemsPerPage(state, itemsPerPage) {
+      state.stateItemsPerPage = itemsPerPage;
     }
   },
   getters: {
-    filteredPokemonList(state) {
+    allFilteredPokemonList(state) {
       let filtered = [...state.stateDetailedPokemonList];
       
       // Filter by search query
@@ -85,11 +99,23 @@ export default new Vuex.Store({
       
       return filtered;
     },
+    filteredPokemonList(state, getters) {
+      const allFiltered = getters.allFilteredPokemonList;
+      const start = (state.stateCurrentPage - 1) * state.stateItemsPerPage;
+      const end = start + state.stateItemsPerPage;
+      return allFiltered.slice(start, end);
+    },
     filteredPokemonCount(state, getters) {
-      return getters.filteredPokemonList.length;
+      return getters.allFilteredPokemonList.length;
     },
     totalPokemonCount(state) {
       return state.stateDetailedPokemonList.length;
+    },
+    totalPages(state, getters) {
+      return Math.ceil(getters.filteredPokemonCount / state.stateItemsPerPage);
+    },
+    currentPage(state) {
+      return state.stateCurrentPage;
     }
   }
 });

@@ -198,8 +198,13 @@ export default {
 
 /* Responsive Design */
 @media screen and (max-width: 768px) {
+  .pokemon-search {
+    margin: 10px 0;
+  }
+  
   .search-container {
     padding: 15px;
+    margin: 0 10px;
   }
   
   .nes-input {
@@ -218,8 +223,21 @@ export default {
 }
 
 @media screen and (max-width: 480px) {
+  .pokemon-search {
+    margin: 5px 0;
+  }
+  
   .search-container {
     padding: 10px;
+    margin: 0 5px;
+  }
+  
+  .search-input-container {
+    margin-bottom: 15px;
+  }
+  
+  .type-filter-container {
+    margin-bottom: 15px;
   }
   
   .type-btn {
@@ -230,10 +248,16 @@ export default {
   
   .search-label {
     font-size: 12px;
+    margin-bottom: 6px;
   }
   
   .results-text {
     font-size: 12px;
+  }
+  
+  .results-info {
+    margin-top: 10px;
+    padding-top: 10px;
   }
 }
 </style>
