@@ -4,10 +4,12 @@
       class="pokemon-card nes-container is-rounded"
     >
       <div class="pokemon-card__image">
-        <img
+        <progressive-image
           :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonData.id}.png`"
           :alt="pokemonData.name"
-        >
+          class-name="pokemon-image"
+          :placeholder-color="getPokemonColor(pokemonData.types)"
+        />
       </div>
       <div class="pokemon-card__text">
         <p>Name: {{ pokemonData.name }}</p>
@@ -26,8 +28,13 @@
   </template>
   
   <script>
+      import ProgressiveImage from './ProgressiveImage'
+      
       export default {
         name: 'PokemonCard',
+        components: {
+          ProgressiveImage
+        },
         props: {
           pokemonName: {
             type: String,
@@ -58,6 +65,30 @@
             return json.flavor_text_entries.filter(function(element) {
               return element.language.name === 'en'
             })
+          },
+          getPokemonColor(types) {
+              if (!types || types.length === 0) return '#f0f0f0'
+              const typeColors = {
+                  normal: '#A8A878',
+                  fire: '#F08030',
+                  water: '#6890F0',
+                  electric: '#F8D030',
+                  grass: '#78C850',
+                  ice: '#98D8D8',
+                  fighting: '#C03028',
+                  poison: '#A040A0',
+                  ground: '#E0C068',
+                  flying: '#A890F0',
+                  psychic: '#F85888',
+                  bug: '#A8B820',
+                  rock: '#B8A038',
+                  ghost: '#705898',
+                  dragon: '#7038F8',
+                  dark: '#705848',
+                  steel: '#B8B8D0',
+                  fairy: '#EE99AC'
+              }
+              return typeColors[types[0].type.name] || '#f0f0f0'
           }
         }
           
@@ -80,7 +111,7 @@
     margin-right: 15px;
   }
 
-  .pokemon-card__image img {
+  .pokemon-card__image .pokemon-image {
     width: 100px;
     height: 100px;
     object-fit: contain;
@@ -109,7 +140,7 @@
       margin-bottom: 10px;
     }
 
-    .pokemon-card__image img {
+    .pokemon-card__image .pokemon-image {
       width: 80px;
       height: 80px;
     }
@@ -125,7 +156,7 @@
       padding: 10px;
     }
 
-    .pokemon-card__image img {
+    .pokemon-card__image .pokemon-image {
       width: 60px;
       height: 60px;
     }

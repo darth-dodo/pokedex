@@ -1,11 +1,20 @@
 <template>
     <div class="pokemon-list">
       <h2>Choose your Pokémon</h2>
-      <div
-        v-for="(pokemon, index) in pokemonList"
-        :key="pokemon.url"
-        class="pokemon-list-item"
+      <skeleton-loader v-if="isLoading" :count="10" />
+      <virtual-scroller
+        v-else
+        :items="pokemonList"
+        :item-height="getItemHeight()"
+        :container-height="getContainerHeight()"
+        :buffer="3"
+        class="pokemon-virtual-list"
       >
+        <template #default="{ item: pokemon, index }">
+          <div
+            class="pokemon-list-item"
+            :key="pokemon.url"
+          >
         {{ index + 1 + '. ' }}
         <i
           v-if="favorites.includes(pokemon.name)"
@@ -28,15 +37,16 @@
             </span>
           </div>
         </div>
-        <img
+        <progressive-image
           :key="pokemon.url || pokemon.id"
           :src="
             pokemon.sprites?.front_default || 
             `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id || index + 1}.png`
           "
           :alt="pokemon.name"
-          class="pokemon-sprite"
-        >
+          class-name="pokemon-sprite"
+          :placeholder-color="getPokemonColor(pokemon.types)"
+        />
         <a
           v-show="!favorites.includes(pokemon.name)"
           class="nes-btn"
@@ -50,15 +60,26 @@
         >
           Remove
         </button>
-      </div>
+          </div>
+        </template>
+      </virtual-scroller>
     </div>
   </template>
   
   <script>
   import { mapActions } from 'vuex'
+  import SkeletonLoader from './SkeletonLoader'
+  import ProgressiveImage from './ProgressiveImage'
+  import VirtualScroller from './VirtualScroller'
+  import HapticFeedback from '../utils/haptics'
   
   export default {
       name: 'PokemonList',
+      components: {
+          SkeletonLoader,
+          ProgressiveImage,
+          VirtualScroller,
+      },
       props: {
           pokemonList: {
               type: Array,
@@ -67,6 +88,10 @@
           favorites: {
               type: Array,
               required: true,
+          },
+          isLoading: {
+              type: Boolean,
+              default: false,
           },
       },
       computed: {
@@ -79,10 +104,14 @@
               if (this.favorites.includes(name)) {
                   const indexInArray = this.favorites.indexOf(name)
                   this.deleteFavorite(indexInArray)
+                  HapticFeedback.light()
                   return
               }
               if (this.favoriteListLength < 10) {
                   this.addFavorite(name)
+                  HapticFeedback.success()
+              } else {
+                  HapticFeedback.error()
               }
           },
           playPokemonCry(pokemonId) {
@@ -93,10 +122,43 @@
           },
           checkEasterEgg(pokemonName) {
               if (pokemonName === 'pikachu') {
+                  HapticFeedback.notification()
                   setTimeout(() => {
                       alert('⚡ Pika Pika! You found the electric mouse! ⚡')
                   }, 500)
               }
+          },
+          getPokemonColor(types) {
+              if (!types || types.length === 0) return '#f0f0f0'
+              const typeColors = {
+                  normal: '#A8A878',
+                  fire: '#F08030',
+                  water: '#6890F0',
+                  electric: '#F8D030',
+                  grass: '#78C850',
+                  ice: '#98D8D8',
+                  fighting: '#C03028',
+                  poison: '#A040A0',
+                  ground: '#E0C068',
+                  flying: '#A890F0',
+                  psychic: '#F85888',
+                  bug: '#A8B820',
+                  rock: '#B8A038',
+                  ghost: '#705898',
+                  dragon: '#7038F8',
+                  dark: '#705848',
+                  steel: '#B8B8D0',
+                  fairy: '#EE99AC'
+              }
+              return typeColors[types[0].type.name] || '#f0f0f0'
+          },
+          getItemHeight() {
+              if (window.innerWidth <= 480) return 140
+              if (window.innerWidth <= 768) return 160
+              return 120
+          },
+          getContainerHeight() {
+              return Math.min(window.innerHeight - 300, 600)
           },
           ...mapActions(['addFavorite', 'deleteFavorite']),
       },
@@ -108,6 +170,13 @@
       text-transform: capitalize;
       box-sizing: border-box;
       padding: 20px;
+  }
+  
+  .pokemon-virtual-list {
+      height: 600px;
+      max-height: calc(100vh - 300px);
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.05);
   }
   
   .pokemon-list-item {
@@ -147,12 +216,29 @@
 
   .type-badge {
     font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 4px;
-    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
     font-weight: bold;
     text-transform: uppercase;
-    border: 1px solid #333;
+    border: 2px solid rgba(0,0,0,0.2);
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+  }
+  
+  .type-badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  }
+  
+  .type-badge:active {
+    transform: scale(0.95);
   }
 
   .pokemon-sprite {
@@ -161,29 +247,31 @@
     object-fit: contain;
   }
 
-  /* Pokemon Type Colors */
-  .type-normal { background-color: #A8A878; }
-  .type-fire { background-color: #F08030; }
-  .type-water { background-color: #6890F0; }
-  .type-electric { background-color: #F8D030; color: #333; }
-  .type-grass { background-color: #78C850; }
-  .type-ice { background-color: #98D8D8; color: #333; }
-  .type-fighting { background-color: #C03028; }
-  .type-poison { background-color: #A040A0; }
-  .type-ground { background-color: #E0C068; color: #333; }
-  .type-flying { background-color: #A890F0; }
-  .type-psychic { background-color: #F85888; }
-  .type-bug { background-color: #A8B820; }
-  .type-rock { background-color: #B8A038; }
-  .type-ghost { background-color: #705898; }
-  .type-dragon { background-color: #7038F8; }
-  .type-dark { background-color: #705848; }
-  .type-steel { background-color: #B8B8D0; color: #333; }
-  .type-fairy { background-color: #EE99AC; color: #333; }
+  /* Pokemon Type Colors with better contrast */
+  .type-normal { background-color: #A8A878; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-fire { background-color: #F08030; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-water { background-color: #6890F0; color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-electric { background-color: #F8D030; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-grass { background-color: #78C850; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-ice { background-color: #98D8D8; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-fighting { background-color: #C03028; color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-poison { background-color: #A040A0; color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-ground { background-color: #E0C068; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-flying { background-color: #A890F0; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-psychic { background-color: #F85888; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-bug { background-color: #A8B820; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-rock { background-color: #B8A038; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-ghost { background-color: #705898; color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-dragon { background-color: #7038F8; color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-dark { background-color: #705848; color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-steel { background-color: #B8B8D0; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .type-fairy { background-color: #EE99AC; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 
   .nes-btn {
       width: 120px;
       height: 70px;
+      min-height: 44px;
+      min-width: 44px;
   }
 
   /* Responsive Design */
@@ -228,7 +316,9 @@
 
     .type-badge {
       font-size: 9px;
-      padding: 2px 6px;
+      padding: 6px 10px;
+      min-height: 44px;
+      min-width: 44px;
     }
 
     .pokemon-sprite {
@@ -239,7 +329,9 @@
 
     .nes-btn {
       width: 80px;
-      height: 40px;
+      height: 44px;
+      min-height: 44px;
+      min-width: 44px;
       font-size: 10px;
       margin-top: 8px;
     }
@@ -286,7 +378,9 @@
 
     .type-badge {
       font-size: 8px;
-      padding: 2px 5px;
+      padding: 6px 8px;
+      min-height: 44px;
+      min-width: 44px;
     }
 
     .pokemon-sprite {
@@ -297,7 +391,9 @@
 
     .nes-btn {
       width: 70px;
-      height: 35px;
+      height: 44px;
+      min-height: 44px;
+      min-width: 44px;
       font-size: 9px;
       margin-top: 6px;
     }

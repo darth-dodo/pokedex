@@ -10,12 +10,14 @@
       <pokemon-search
         :total-count="totalPokemonCount"
         :filtered-count="filteredPokemonCount"
+        :all-pokemon="statePokemonDataList"
         @filter-change="handleFilterChange"
       />
       <div class="select-pokemon-content">
         <pokemon-list
           :pokemon-list="filteredPokemonList"
           :favorites="stateFavoritePokemonList"
+          :is-loading="isLoading"
         />
         <summary-favorites
           :pokemon-list="filteredPokemonList"
@@ -51,7 +53,8 @@
           return {
               logoClickCount: 0,
               secretSequence: [],
-              konamiCode: ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA']
+              konamiCode: ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'],
+              isLoading: true
           }
       },
       computed: {
@@ -59,12 +62,14 @@
           ...mapGetters(['filteredPokemonList', 'filteredPokemonCount', 'totalPokemonCount', 'totalPages', 'currentPage']),
       },
       async created() {
+          this.isLoading = true
           const pokemonData = await this.getPokemonData()
           this.setPokemonData(pokemonData)
           
           // Fetch detailed data for all Pokemon
           const detailedData = await this.getDetailedPokemonData(pokemonData)
           this.setDetailedPokemonList(detailedData)
+          this.isLoading = false
       },
       mounted() {
           document.addEventListener('keydown', this.handleKeydown)
