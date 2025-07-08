@@ -190,13 +190,23 @@
   @media screen and (max-width: 768px) {
     .pokemon-list {
         padding: 15px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .pokemon-list > h2 {
+        width: 100%;
+        margin-bottom: 20px;
     }
 
     .pokemon-list-item {
       flex-direction: column;
       text-align: center;
       padding: 15px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
+      width: calc(50% - 5px);
+      box-sizing: border-box;
     }
 
     .pokemon-info {
@@ -207,69 +217,89 @@
     }
 
     .pokemon-name {
-      font-size: 16px;
-      margin-bottom: 8px;
+      font-size: 14px;
+      margin-bottom: 6px;
     }
 
     .pokemon-types {
       justify-content: center;
-      gap: 6px;
+      gap: 4px;
     }
 
     .type-badge {
-      font-size: 11px;
-      padding: 3px 8px;
+      font-size: 9px;
+      padding: 2px 6px;
     }
 
     .pokemon-sprite {
-      width: 80px;
-      height: 80px;
-      margin: 10px 0;
+      width: 60px;
+      height: 60px;
+      margin: 8px 0;
     }
 
     .nes-btn {
-      width: 100px;
-      height: 50px;
-      font-size: 12px;
-      margin-top: 10px;
+      width: 80px;
+      height: 40px;
+      font-size: 10px;
+      margin-top: 8px;
     }
   }
 
   @media screen and (max-width: 480px) {
     .pokemon-list {
         padding: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .pokemon-list > h2 {
+        width: 100%;
+        margin-bottom: 15px;
     }
 
     .pokemon-list-item {
-      padding: 20px;
-      margin-bottom: 25px;
+      flex-direction: column;
+      text-align: center;
+      padding: 12px;
+      margin-bottom: 8px;
+      width: calc(50% - 4px);
+      box-sizing: border-box;
+    }
+
+    .pokemon-info {
+      width: 100%;
+      padding-left: 0;
+      text-align: center;
+      margin-bottom: 8px;
     }
 
     .pokemon-name {
-      font-size: 18px;
-      margin-bottom: 10px;
+      font-size: 13px;
+      margin-bottom: 5px;
     }
 
     .pokemon-types {
-      gap: 8px;
+      justify-content: center;
+      gap: 3px;
     }
 
     .type-badge {
-      font-size: 12px;
-      padding: 4px 10px;
+      font-size: 8px;
+      padding: 2px 5px;
     }
 
     .pokemon-sprite {
-      width: 100px;
-      height: 100px;
-      margin: 15px 0;
+      width: 50px;
+      height: 50px;
+      margin: 6px 0;
     }
 
     .nes-btn {
-      width: 120px;
-      height: 60px;
-      font-size: 14px;
-      margin-top: 15px;
+      width: 70px;
+      height: 35px;
+      font-size: 9px;
+      margin-top: 6px;
     }
   }
   </style>

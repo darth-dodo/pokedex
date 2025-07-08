@@ -27,7 +27,7 @@
         :current-page="currentPage"
         :total-pages="totalPages"
         :total-items="filteredPokemonCount"
-        :items-per-page="20"
+        :items-per-page="10"
         @page-change="handlePageChange"
       />
     </div>

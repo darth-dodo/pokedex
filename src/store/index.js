@@ -11,7 +11,7 @@ export default new Vuex.Store({
     stateSearchQuery: '',
     stateSelectedType: '',
     stateCurrentPage: 1,
-    stateItemsPerPage: 20
+    stateItemsPerPage: 10
   },
   actions: {
     setPokemonData(context, payload) {
