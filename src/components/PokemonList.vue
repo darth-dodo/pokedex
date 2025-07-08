@@ -1,7 +1,7 @@
 <template>
     <div class="pokemon-list">
       <h2>Choose your Pokémon</h2>
-      <p
+      <div
         v-for="(pokemon, index) in pokemonList"
         :key="pokemon.url"
         class="pokemon-list-item"
@@ -50,7 +50,7 @@
         >
           Remove
         </button>
-      </p>
+      </div>
     </div>
   </template>
   
