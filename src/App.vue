@@ -6,12 +6,24 @@
       </button>
     </div>
     <router-view />
+    <bottom-navigation 
+      :is-dark-mode="isDarkMode" 
+      @toggle-dark-mode="toggleDarkMode"
+    />
+    <install-prompt />
   </div>
 </template>
 
 <script>
+import BottomNavigation from './components/BottomNavigation'
+import InstallPrompt from './components/InstallPrompt'
+
 export default {
   name: 'App',
+  components: {
+    BottomNavigation,
+    InstallPrompt
+  },
   data() {
     return {
       isDarkMode: false
@@ -76,6 +88,16 @@ export default {
 }
 
 @media screen and (max-width: 768px) {
+  .theme-toggle {
+    display: none;
+  }
+  
+  #app {
+    padding-bottom: 80px;
+  }
+}
+
+@media screen and (min-width: 769px) {
   .theme-toggle {
     top: 10px;
     right: 10px;

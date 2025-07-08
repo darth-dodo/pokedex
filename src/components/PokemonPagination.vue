@@ -167,6 +167,7 @@ export default {
   padding: 8px 12px;
   height: auto;
   min-width: 60px;
+  min-height: 44px;
 }
 
 .page-numbers {
@@ -200,6 +201,7 @@ export default {
     font-size: 10px;
     padding: 6px 8px;
     min-width: 50px;
+    min-height: 44px;
   }
   
   .page-number {
@@ -230,6 +232,7 @@ export default {
     font-size: 9px;
     padding: 4px 6px;
     min-width: 45px;
+    min-height: 44px;
   }
   
   .page-number {

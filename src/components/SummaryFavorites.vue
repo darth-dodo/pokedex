@@ -49,6 +49,7 @@
   
   <script>
   import { mapActions } from 'vuex'
+  import HapticFeedback from '../utils/haptics'
   
       export default {
           name: 'SummaryFavorites',
@@ -96,13 +97,16 @@
             },
             emptyFavoritePokemonList() {
               this.eraseFavoritePokemonList()
+              HapticFeedback.error()
               this.clickCount++
               if (this.clickCount === 5) {
+                  HapticFeedback.notification()
                   alert('🗑️ You really like clearing lists! Here\'s a secret: Try clicking the logo 10 times! 🗑️')
                   this.clickCount = 0
               }
             },
             konamiEasterEgg() {
+              HapticFeedback.notification()
               const audio = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.wav')
               audio.play().catch(() => {})
               alert('🎮 Konami Code Master! You found the secret double-click! 🎮')
@@ -139,6 +143,8 @@
 
   .nes-btn {
       margin: 10px 5px;
+      min-height: 44px;
+      min-width: 44px;
   }
 
   @media screen and (max-width: 768px) {
@@ -156,6 +162,8 @@
       .nes-btn {
           margin: 8px 3px;
           font-size: 12px;
+          min-height: 44px;
+          min-width: 44px;
       }
   }
 
@@ -176,6 +184,8 @@
           margin: 5px 2px;
           font-size: 10px;
           padding: 5px 10px;
+          min-height: 44px;
+          min-width: 44px;
       }
   }
   </style>
